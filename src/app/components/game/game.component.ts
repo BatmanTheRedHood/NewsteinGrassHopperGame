@@ -17,10 +17,8 @@ var soundLoop;
 export class GameComponent implements AfterViewInit {
     public snake: Snake;
     public food: Food;
-    public score: number;
-    public borderWidth: number = Helper.maxWidth;
-    public borderHeight: number = Helper.maxHeight;
 
+    // #region Images and Sound element
     @ViewChild('myCanvas') public canvas: ElementRef;
     @ViewChild('tidda') public snakeImg: ElementRef;
     @ViewChild('snakeRight') public snakeRightImg: ElementRef;
@@ -32,12 +30,13 @@ export class GameComponent implements AfterViewInit {
     @ViewChild('explosionAudio') explosionAudio: ElementRef;
     @ViewChild('yummyAudio') yummyAudio: ElementRef;
     @ViewChild('diceRollAudio') diceRollAudio: ElementRef;
+    // #endregion 
 
     private context: CanvasRenderingContext2D;
     private snakeImageRef: ElementRef;
+    private resume: boolean = true;
 
-    public constructor(private router: Router) { 
-        this.score = 0;
+    public constructor(private router: Router) {
         this.snake = new Snake();
         this.food = new Food();
     }
@@ -75,7 +74,7 @@ export class GameComponent implements AfterViewInit {
     // #region Game rules
     private runGame(): void {
         gameLoop = setInterval(() => {
-            this.context.clearRect(0, 0, this.borderWidth, this.borderHeight);
+            this.context.clearRect(0, 0, Helper.maxWidth, Helper.maxHeight);
 
             if (this.snake.checkCollision()) {
                 this.drawCollision();
@@ -88,17 +87,26 @@ export class GameComponent implements AfterViewInit {
                     this.router.navigate([""]);
                 }, 800)
             } else if (this.snake.canEat(this.food)) {
-                this.score++;
-                this.playYummyAudio();
-                this.drawTasty();
-                this.playDiceRollAudio();
+                if (this.resume) {
+                    this.snake.updateScore();
+                    this.food.speedUp(this.snake.speed);
+                    this.playYummyAudio();
+                    this.drawTasty();
+                    this.playDiceRollAudio();
 
-                setTimeout(() => {
-                    this.food.generateNew();
-                    this.draw();
-                }, 400)
+                    setTimeout(() => {
+                        this.food.generateNew();
+                        this.draw();
+                        this.resume = true
+                    }, 400)
+
+                    this.resume = false;
+                } else {
+                    this.drawTasty();
+                }
             } else {
                 this.snake.move();
+                this.food.move();
                 this.draw();
             }
         }, 10);
@@ -130,16 +138,12 @@ export class GameComponent implements AfterViewInit {
     // #region Draw logic
 
     private draw(): void {
-        if (this.snake.direction == Direction.Right) {
-            this.drawSnake();
-        } else {
             this.context.drawImage(
                 this.snakeImageRef.nativeElement, 
                 this.snake.drawPosition.x,
                 this.snake.drawPosition.y,
                 this.snake.size, 
                 this.snake.size);
-        }
 
         this.context.drawImage(
             this.foodImg.nativeElement, 
@@ -171,34 +175,12 @@ export class GameComponent implements AfterViewInit {
         const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
     
         // set the width and height
-        canvasEl.width = this.borderWidth;
-        canvasEl.height = this.borderHeight;
+        canvasEl.width = Helper.maxWidth;
+        canvasEl.height = Helper.maxHeight;
 
         this.context = this.canvas.nativeElement.getContext('2d');
 
         this.snakeImageRef = this.snakeImg;
-    }
-
-    private drawSnake(): void {
-        //this.context.save();
-
-        // rotate the canvas to the specified degrees
-        //this.context.rotate(90 * Math.PI/180);
-
-        // move to the center of the canvas
-        //this.context.translate(600, 300);
-
-        // draw the image
-        // since the context is rotated, the image will be rotated alsothis.context.drawImage(
-        this.context.drawImage(
-            this.snakeImageRef.nativeElement,
-            this.snake.drawPosition.x,
-            this.snake.drawPosition.y,
-            this.snake.size,
-            this.snake.size);
-
-        // we’re done with the rotating so restore the unrotated context
-        //this.context.restore();
     }
     // #endregion
 }

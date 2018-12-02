@@ -5,11 +5,12 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './game-setup.component.html',
   styleUrls: ['./game-setup.component.css']
 })
-export class GameSetupComponent implements OnInit {
-  title = 'Newstein Games';
-  constructor() { }
-
-  ngOnInit() {
+export class GameSetupComponent{
+  
+  public title: string;
+  
+  constructor() { 
+    this.title = 'Newstein Games';
   }
 
 }

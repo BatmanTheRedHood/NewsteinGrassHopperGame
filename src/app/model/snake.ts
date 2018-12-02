@@ -2,7 +2,6 @@ import { Direction } from "../DataTypes/direction.enum";
 import { Coordinate } from "./coordinate";
 import { Helper } from "../helper/helper";
 import { Food } from "./food";
-import { ElementRef } from "@angular/core";
 
 export class Snake {
     // Fields
@@ -10,6 +9,10 @@ export class Snake {
     public position: Coordinate;
     private tail: Coordinate; // Will not use for now. Head = Tail
     public size: number; // Will keep fixed size 1 for now.
+    public speed: number;
+    public score: number;
+
+    public static levelUpScore = 2;
     
     // Properties
     public get drawPosition() : Coordinate {
@@ -22,29 +25,43 @@ export class Snake {
     // Constructor
     public constructor() {
         this.size = 100;
+        this.speed = 1;
+        this.score = 0;
         this.direction = Direction.Left;
         this.position = new Coordinate(
-            Helper.random(400, Helper.maxWidth - 50), 
-            Helper.random(50, Helper.maxHeight - 50));
+            Helper.random(400, Helper.maxWidth - this.size/2), 
+            Helper.random(this.size/2, Helper.maxHeight - this.size/2));
     }
 
     // #region Methods
+    public speedUp(): void {
+        this.speed++;
+    }
+
+    public updateScore(): void {
+        this.score++;
+
+        if (this.score % Snake.levelUpScore == 0) {
+            this.speedUp();
+        }
+    }
+
     public move() : void {
         switch (this.direction) {
             case Direction.Up:
-                this.position.y -= 1;
+                this.position.y -= this.speed;
                 break; 
 
             case Direction.Down:
-                this.position.y += 1;
+                this.position.y += this.speed;
                 break; 
 
             case Direction.Left:
-                this.position.x -= 1;
+                this.position.x -= this.speed;
                 break; 
 
             case Direction.Right:
-                this.position.x += 1;
+                this.position.x += this.speed;
                 break;  
         }
     }
@@ -66,8 +83,8 @@ export class Snake {
 
     public canEat(food: Food): boolean {
         if (
-            Math.abs(this.position.x - food.position.x) < 50 &&
-            Math.abs(this.position.y - food.position.y) < 50) {
+            Math.abs(this.position.x - food.position.x) < this.size/2 &&
+            Math.abs(this.position.y - food.position.y) < this.size/2) {
             return true;
         }
 

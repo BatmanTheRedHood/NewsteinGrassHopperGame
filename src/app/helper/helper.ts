@@ -1,10 +1,10 @@
 export class Helper {
   public static get maxWidth() : number {
-    return 1200;
+    return 1400;
   }
   
   public static get maxHeight() : number {
-    return 600;
+    return 640;
   }
 
   public static random(min: number, max: number) : number {

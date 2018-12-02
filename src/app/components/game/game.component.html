@@ -1,14 +1,12 @@
 <div style="text-align:center">
-  <h1>
-    Welcome to Newstein Game
-  </h1>
-
   <canvas #myCanvas [width]='borderWidth' [height]='borderWidth' style="background: greenyellow; background-image: url('https://www.easyturf.com.au/wp-content/uploads/2017/04/golf-green-fake-grass.jpg'); border: solid tan">Your browser does not support the HTML5 canvas tag.</canvas>
 </div>
 
-<h3> Score: {{score}}</h3>
+<h3 style="float: left;" > Score: {{snake.score}}</h3>
 
-<img #snake width="100" height="100"
+<h3 style="float: right;" > Level: {{snake.speed}}</h3>
+
+<img #snakeImg width="100" height="100"
 src="assets/img/tidda.jpg" alt="snake" [hidden]='true'>
 
 <img #tidda width="100" height="100"
