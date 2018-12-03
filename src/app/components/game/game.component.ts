@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, HostListener } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, HostListener, OnDestroy } from '@angular/core';
 import { Snake } from '../../model/snake';
 import { Food } from '../../model/food';
 import { Direction } from '../../DataTypes/direction.enum';
@@ -14,7 +14,7 @@ var soundLoop;
     templateUrl: './game.component.html',
     styleUrls: ['./game.component.css']
 })
-export class GameComponent implements AfterViewInit {
+export class GameComponent implements AfterViewInit, OnDestroy {
     public snake: Snake;
     public food: Food;
 
@@ -42,7 +42,30 @@ export class GameComponent implements AfterViewInit {
     }
 
     @HostListener('window:keyup', ['$event'])
-    keyEvent(event: KeyboardEvent) {
+    keyUpEvent(event: KeyboardEvent) {
+        switch(event.keyCode) {
+            case KeyCode.DOWN_ARROW:
+                this.snake.changeDirection(Direction.Down);
+                break;
+                
+            case KeyCode.UP_ARROW:
+                this.snake.changeDirection(Direction.Up);
+                break;
+                
+            case KeyCode.RIGHT_ARROW:
+                this.snake.changeDirection(Direction.Right);
+                this.snakeImageRef = this.snakeRightImg;
+                break;
+                
+            case KeyCode.LEFT_ARROW:
+                this.snake.changeDirection(Direction.Left);
+                this.snakeImageRef = this.snakeImg;
+                break;
+        }
+    }
+
+    @HostListener('window:keydown', ['$event'])
+    keyDownEvent(event: KeyboardEvent) {
         switch(event.keyCode) {
             case KeyCode.DOWN_ARROW:
                 this.snake.changeDirection(Direction.Down);
@@ -183,4 +206,7 @@ export class GameComponent implements AfterViewInit {
         this.snakeImageRef = this.snakeImg;
     }
     // #endregion
+
+    public ngOnDestroy(): void {
+    }
 }

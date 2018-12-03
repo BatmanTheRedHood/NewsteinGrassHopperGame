@@ -1,24 +1,32 @@
-import { Coordinate } from "./coordinate";
-import { Direction } from "../DataTypes/direction.enum";
+import { Coordinate } from "../coordinate";
+import { Direction } from "../../DataTypes/direction.enum";
 import { Egg } from "./egg";
-import { Helper } from "../helper/helper";
+import { Helper } from "../../helper/helper";
 
 export class Chicken {
     // Properties
     public position: Coordinate;
     public size:number;
     private speed: number;
-    private direction: Direction;
+    public direction: Direction;
 
     public eggs: Egg[];
+
+    // Properties
+    public get drawPosition(): Coordinate {
+        if (this.position)
+            return new Coordinate(this.position.x - this.size / 2, this.position.y - this.size / 2);
+
+        return null;
+    }
 
     public constructor() {
         this.size = 100;
         this.speed = 1;
         this.direction = Direction.Left;
         this.position = new Coordinate(
-            Helper.random(Helper.maxWidth - 400, Helper.maxWidth - this.size/2), 
-            Helper.maxHeight - this.size/2);
+            Helper.random(this.size/2, Helper.maxWidth - this.size/2), 
+            this.size/2);
 
         this.eggs = [];
     }
@@ -34,7 +42,9 @@ export class Chicken {
                 break;  
         }
 
-        this.checkBoundary();
+        if(this.checkBoundary()) {
+            this.changeDirection();
+        }
     }
 
     public changeDirection() : void {
@@ -50,11 +60,13 @@ export class Chicken {
         this.eggs.splice(0, 0, egg); // Add egg at start;
     }
 
-    private checkBoundary() : void {
-        if (this.position.x < this.size/2) {
-            this.changeDirection();
-        } else if (this.position.x > (Helper.maxWidth - this.size/2)) {
-            this.changeDirection();
+    public checkBoundary() : boolean {
+        if (this.position.x < 0) {
+            return true;
+        } else if (this.position.x > Helper.maxWidth) {
+            return true;
         }
+
+        return false;
     }
 }
