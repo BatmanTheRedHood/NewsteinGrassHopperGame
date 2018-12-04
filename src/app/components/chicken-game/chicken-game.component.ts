@@ -29,13 +29,13 @@ export class ChickenGameComponent implements AfterViewInit, OnDestroy {
 
     // @ViewChild('snakeRight') public snakeRightImg: ElementRef;
     // @ViewChild('bug') public foodImg: ElementRef;
-    // @ViewChild('boom') public boomImg: ElementRef;
 
+    @ViewChild('chickenSwingAudio') public chickenSwingAudio: ElementRef;
     @ViewChild('layEggAudio') public layEggAudio: ElementRef;
-    @ViewChild('cricketAudio') cricketAudio: ElementRef;
-    @ViewChild('eggCrackAudio') eggCrackAudio: ElementRef;
-    @ViewChild('eggCatchAudio') eggCatchAudio: ElementRef;
-    @ViewChild('bounceAudio') bounceAudio: ElementRef;
+    @ViewChild('cricketAudio') public cricketAudio: ElementRef;
+    @ViewChild('eggCrackAudio') public eggCrackAudio: ElementRef;
+    @ViewChild('eggCatchAudio') public eggCatchAudio: ElementRef;
+    @ViewChild('bounceAudio') public bounceAudio: ElementRef;
     
     // #endregion 
 
@@ -128,6 +128,7 @@ export class ChickenGameComponent implements AfterViewInit, OnDestroy {
             }
 
             if ((this.directionChangeCounter * this.level) > this.directionChangeInterval) {
+                this.playChickenSwingAudio();
                 this.chicken.changeDirection();
                 this.directionChangeCounter = 0;
                 this.directionChangeInterval = Helper.random(100, 3000);
@@ -199,6 +200,9 @@ export class ChickenGameComponent implements AfterViewInit, OnDestroy {
         this.layEggAudio.nativeElement.play();
     }
 
+    private playChickenSwingAudio(): void {
+        this.chickenSwingAudio.nativeElement.play();
+    }
     // #endregion
 
     // #region Draw logic
