@@ -15,9 +15,9 @@ export class Egg {
         return null;
     }
 
-    public constructor(chickenPostion: Coordinate) {
+    public constructor(chickenPostion: Coordinate, speed: number) {
         this.size = 50;
-        this.speed = 2;
+        this.speed = 2 * speed;
         this.position = new Coordinate(chickenPostion.x, chickenPostion.y);
     }
 

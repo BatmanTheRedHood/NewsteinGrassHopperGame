@@ -46,6 +46,10 @@ export class Basket {
         this.score++;
     }
 
+    public speedUp() : void {
+        this.speed++;
+    }
+
     public catchEgg(position: Coordinate): boolean {
         if (Helper.abs(this.position.x - position.x) < this.size/2 &&
             this.position.y - position.y < 10) {

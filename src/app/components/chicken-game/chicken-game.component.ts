@@ -4,8 +4,7 @@ import { KeyCode } from 'src/app/DataTypes/key-code.enum';
 import { Helper } from 'src/app/helper/helper';
 import { Direction } from 'src/app/DataTypes/direction.enum';
 import { Basket } from 'src/app/model/chickenGame/basket';
-import { Coordinate } from 'src/app/model/coordinate';
-import { Egg } from 'src/app/model/chickenGame/egg';
+import { Router } from '@angular/router';
 
 var gameLoop;
 var soundLoop;
@@ -42,18 +41,25 @@ export class ChickenGameComponent implements AfterViewInit, OnDestroy {
     private context: CanvasRenderingContext2D;
     private resume: boolean = true;
     private level: number;
+    private levelUpThreshold: number;
     private interval: number;
     private counter: number;
     private directionChangeInterval: number;
     private directionChangeCounter: number;
 
-    public constructor() {
+    private eggMissed: number;
+
+    public constructor(private router: Router) {
         this.level = 1;
+        this.levelUpThreshold = 10;
+        this.eggMissed = 0;
+
         this.interval = 100;
         this.counter = 0;
 
         this.directionChangeInterval = 50;
         this.directionChangeCounter = 0;
+
 
         this.chicken = new Chicken();
         this.basket = new Basket();
@@ -84,59 +90,9 @@ export class ChickenGameComponent implements AfterViewInit, OnDestroy {
         gameLoop = setInterval(() => {
             this.context.clearRect(0, 0, Helper.maxWidth, Helper.maxHeight);
 
-            /*
-            if (this.snake.checkCollision()) {
-                this.drawCollision();
-                this.playExplosionAudio();
-       
-                // Stop game.
-                setTimeout(() => {
-                    clearInterval(gameLoop);
-                    clearInterval(soundLoop);
-                    this.router.navigate([""]);
-                }, 800)
-            } else if (this.snake.canEat(this.food)) {
-                if (this.resume) {
-                    this.snake.updateScore();
-                    this.food.speedUp(this.snake.speed);
-                    this.playYummyAudio();
-                    this.drawTasty();
-                    this.playDiceRollAudio();
-      
-                    setTimeout(() => {
-                        this.food.generateNew();
-                        this.draw();
-                        this.resume = true
-                    }, 400)
-      
-                    this.resume = false;
-                } else {
-                    this.drawTasty();
-                }
-            } else {
-                this.snake.move();
-                this.food.move();
-                this.draw();
-            }
-            */
-
-            if ((this.counter * this.level) > this.interval) {
-                this.playLayEggAudio();
-                this.chicken.layEgg();
-                this.counter = 0;
-                this.interval = Helper.random(100, 1000);
-            }
-
-            if ((this.directionChangeCounter * this.level) > this.directionChangeInterval) {
-                this.playChickenSwingAudio();
-                this.chicken.changeDirection();
-                this.directionChangeCounter = 0;
-                this.directionChangeInterval = Helper.random(100, 3000);
-            }
-
-            if (this.chicken.checkBoundary()) {
-                this.playBounceAudio();
-            }
+            this.checkAndEndGame();
+            this.checkAndLayEgg();
+            this.checkAndChangeDirection();
 
             this.chicken.move();
 
@@ -145,22 +101,18 @@ export class ChickenGameComponent implements AfterViewInit, OnDestroy {
                     this.basket.scoreUp();
                     this.chicken.eggs.pop();
                     this.playEggCatchAudio();
+
+                    this.checkAndLevelUp();
                 }
-                else if (this.chicken.eggs[i].isHittingGround()) {
-                
+                else if (this.chicken.eggs[i].isHittingGround()) {  
                     if (this.resume) {
-                        // this.snake.updateScore();
-                        // this.food.speedUp(this.snake.speed);
-                        // this.playYummyAudio();
-                        //this.drawEggCrash(crashingEgg);
-                        // this.playDiceRollAudio();
                         this.playEggCrackAudio();
 
                         setTimeout(() => {
-                            // this.food.generateNew();
                             this.draw();
                             this.resume = true;
                             this.chicken.eggs.pop();
+                            this.eggMissed++;
                         }, 400)
 
                         this.resume = false;
@@ -171,9 +123,47 @@ export class ChickenGameComponent implements AfterViewInit, OnDestroy {
             }
 
             this.draw();
-            this.counter++;
-            this.directionChangeCounter++;
         }, 10);
+    }
+
+    private checkAndEndGame() : void {
+        if(this.eggMissed >= 10) {
+            clearInterval(gameLoop);
+            clearInterval(soundLoop);
+            this.router.navigate([""]);
+        }
+    }
+
+    private checkAndLevelUp() : void {
+        if (this.basket.score % this.levelUpThreshold == 0) {
+            this.level++;
+            this.chicken.speedUp();
+        }
+    }
+
+    private checkAndLayEgg() {
+        if ((this.counter * this.level) > this.interval) {
+            this.playLayEggAudio();
+            this.chicken.layEgg();
+            this.counter = 0;
+            this.interval = Helper.random(100, 1000);
+        }
+        this.counter++;
+    }
+
+    private checkAndChangeDirection() {
+        if ((this.directionChangeCounter * this.level) > this.directionChangeInterval) {
+            this.playChickenSwingAudio();
+            this.chicken.changeDirection();
+            this.directionChangeCounter = 0;
+            this.directionChangeInterval = Helper.random(100, 3000);
+        }
+
+        if (this.chicken.checkBoundary()) {
+            this.playBounceAudio();
+        }
+
+        this.directionChangeCounter++;
     }
 
     // #endregion 

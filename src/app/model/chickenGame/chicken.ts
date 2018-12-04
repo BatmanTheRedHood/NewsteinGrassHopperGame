@@ -47,6 +47,10 @@ export class Chicken {
         }
     }
 
+    public speedUp() {
+        this.speed++;
+    }
+
     public changeDirection() : void {
         if (this.direction == Direction.Left) {
             this.direction = Direction.Right;
@@ -56,7 +60,7 @@ export class Chicken {
     }
 
     public layEgg(): void {
-        let egg = new Egg(this.position);
+        let egg = new Egg(this.position, this.speed);
         this.eggs.splice(0, 0, egg); // Add egg at start;
     }
 
