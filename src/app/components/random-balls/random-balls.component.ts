@@ -23,7 +23,7 @@ export class RandomBallsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public constructor() { 
       this.balls = [];
-      this.particleCount = 300;
+      this.particleCount = 500;
       this.mouse = new Coordinate(Helper.maxWidth/2, Helper.maxHeight/2);
   }
 

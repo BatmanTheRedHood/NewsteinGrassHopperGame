@@ -5,6 +5,17 @@ export class Helper {
         return 1400;
     }
 
+    private static colors: string[] = [
+        "#92a8d1", "#034f84", "#f7cac9", "#f7786b",
+        "#d5f4e6", "#80ced6", "#fefbd8", "#618685",
+        "#618685", "#36486b", "#4040a1"
+    ];
+
+    public static randomColor(): string {
+        let rand: number = Helper.random(0, Helper.colors.length -7);
+        return Helper.colors[rand - (rand % 1)];
+    }
+
     public static get maxHeight(): number {
         return 640;
     }

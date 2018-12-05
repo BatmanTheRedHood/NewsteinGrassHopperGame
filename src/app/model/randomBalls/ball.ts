@@ -4,6 +4,7 @@ import { Helper } from "src/app/helper/helper";
 export class Ball {
     private static overlapFactor: number = 80;
     private static resizeFactor: number = 1;
+    private static maxRadius: number = 50;
 
     // Properties
     public position: Coordinate;
@@ -14,38 +15,28 @@ export class Ball {
     public dy: number;
     public color: string;
 
-    private static colors: string[] = [
-        "#92a8d1", "#034f84", "#f7cac9", "#f7786b",
-        "#d5f4e6", "#80ced6", "#fefbd8", "#618685"
-    ];
-
-
     public constructor() {
-        this.radius = Helper.random(4, 10);
+        this.radius = Helper.random(2, 10);
         this.lastRadius = this.radius;
-        this.color = this.randomColor(Helper.random(0, 7));
+        this.color = Helper.randomColor();
 
         this.dx = 1;
         this.dy = 1;
-        this.speed = Helper.random(0.5, 2.5);
+        this.speed = Helper.random(0.1, 1.5);
         this.position = new Coordinate(Helper.random(this.radius, Helper.maxWidth), Helper.random(this.radius, Helper.maxHeight));
     }
 
     public move(mouse: Coordinate): void {
         this.checkBoundary();
 
-        if (this.mouseOverlap(mouse)) {
+        this.position.x += (this.dx * this.speed);
+        this.position.y += (this.dy * this.speed);
+
+        if (this.mouseOverlap(mouse) && this.radius < Ball.maxRadius) {
             this.radius += Ball.resizeFactor;
         } else {
             this.radius = this.radius > this.lastRadius? this.radius - Ball.resizeFactor : this.lastRadius;
         }
-
-        this.position.x += (this.dx * this.speed);
-        this.position.y += (this.dy * this.speed);
-    }
-
-    private randomColor(rand: number): string {
-        return Ball.colors[rand - (rand % 1)];
     }
 
     private checkBoundary(): void {
