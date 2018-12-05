@@ -182,6 +182,7 @@ export class ChickenGameComponent implements AfterViewInit, OnDestroy {
     private playEggCatchAudio(): void {
         this.eggCatchAudio.nativeElement.play();
     }
+    
     private playBounceAudio(): void {
         this.bounceAudio.nativeElement.play();
     }

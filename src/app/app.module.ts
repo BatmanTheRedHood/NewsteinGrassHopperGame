@@ -7,18 +7,22 @@ import { GameComponent } from './components/game/game.component';
 import { AppRoutingModule } from './app-routing.module';
 import { GameSetupComponent } from './components/setup/game-setup.component';
 import { ChickenGameComponent } from './components/chicken-game/chicken-game.component';
+import { HttpClientModule } from '@angular/common/http';
+import { BalloonGameComponent } from './components/balloon-game/balloon-game.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     GameComponent,
     GameSetupComponent,
-    ChickenGameComponent
+    ChickenGameComponent,
+    BalloonGameComponent
 
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule,
     FormsModule
   ],
   providers: [],
