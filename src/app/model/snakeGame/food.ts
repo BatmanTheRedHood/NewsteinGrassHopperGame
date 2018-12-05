@@ -1,6 +1,6 @@
-import { Coordinate } from "./coordinate";
-import { Helper } from "../helper/helper";
-import { Direction } from "../DataTypes/direction.enum";
+import { Coordinate } from "../coordinate";
+import { Helper } from "../../helper/helper";
+import { Direction } from "../../DataTypes/direction.enum";
 
 export class Food {
     // Properties

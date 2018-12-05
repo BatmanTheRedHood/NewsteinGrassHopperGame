@@ -9,6 +9,8 @@ import { GameSetupComponent } from './components/setup/game-setup.component';
 import { ChickenGameComponent } from './components/chicken-game/chicken-game.component';
 import { HttpClientModule } from '@angular/common/http';
 import { BalloonGameComponent } from './components/balloon-game/balloon-game.component';
+import { MatrixRainComponent } from './components/matrix-rain/matrix-rain.component';
+import { CircularMotionParticlesComponent } from './components/circular-motion-particles/circular-motion-particles.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +18,9 @@ import { BalloonGameComponent } from './components/balloon-game/balloon-game.com
     GameComponent,
     GameSetupComponent,
     ChickenGameComponent,
-    BalloonGameComponent
+    BalloonGameComponent,
+    MatrixRainComponent,
+    CircularMotionParticlesComponent
 
   ],
   imports: [

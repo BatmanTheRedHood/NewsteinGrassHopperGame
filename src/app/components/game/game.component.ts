@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef, AfterViewInit, HostListener, OnDestroy } from '@angular/core';
-import { Snake } from '../../model/snake';
-import { Food } from '../../model/food';
+import { Snake } from '../../model/snakeGame/snake';
+import { Food } from '../../model/snakeGame/food';
 import { Direction } from '../../DataTypes/direction.enum';
 import { Helper } from 'src/app/helper/helper';
 import { KeyCode } from 'src/app/DataTypes/key-code.enum';
