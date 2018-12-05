@@ -1,11 +1,9 @@
-import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, HostListener, OnDestroy, AfterViewInit } from '@angular/core';
 import { KeyCode } from 'src/app/DataTypes/key-code.enum';
 import { Direction } from 'src/app/DataTypes/direction.enum';
 import { Helper } from 'src/app/helper/helper';
 import { Gun } from 'src/app/model/balloonGame/gun';
-import { ThrowStmt } from '@angular/compiler';
 import { Balloon } from 'src/app/model/balloonGame/balloon';
-
 
 var gameLoop;
 var soundLoop;
@@ -15,7 +13,7 @@ var soundLoop;
     templateUrl: './balloon-game.component.html',
     styleUrls: ['./balloon-game.component.css']
 })
-export class BalloonGameComponent implements OnInit {
+export class BalloonGameComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // #region Images and Sound element
     @ViewChild('myCanvas') public canvas: ElementRef;
@@ -146,8 +144,6 @@ export class BalloonGameComponent implements OnInit {
         canvasEl.height = Helper.maxHeight;
 
         this.context = this.canvas.nativeElement.getContext('2d');
-
-        // this.snakeImageRef = this.snakeImg;
     }
 
     // #endregion

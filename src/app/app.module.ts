@@ -11,6 +11,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { BalloonGameComponent } from './components/balloon-game/balloon-game.component';
 import { MatrixRainComponent } from './components/matrix-rain/matrix-rain.component';
 import { CircularMotionParticlesComponent } from './components/circular-motion-particles/circular-motion-particles.component';
+import { RandomBallsComponent } from './components/random-balls/random-balls.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { CircularMotionParticlesComponent } from './components/circular-motion-p
     ChickenGameComponent,
     BalloonGameComponent,
     MatrixRainComponent,
-    CircularMotionParticlesComponent
+    CircularMotionParticlesComponent,
+    RandomBallsComponent
 
   ],
   imports: [
