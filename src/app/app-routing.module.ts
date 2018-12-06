@@ -8,6 +8,7 @@ import { CircularMotionParticlesComponent } from './components/circular-motion-p
 import { RandomBallsComponent } from './components/random-balls/random-balls.component';
 import { BubblesCollisionComponent } from './components/bubbles-collision/bubbles-collision.component';
 import { BubbleFadeComponent } from './components/bubble-fade/bubble-fade.component';
+import { MatrixRainComponent } from './components/matrix-rain/matrix-rain.component';
 
 const routes: Routes = [
   { path: "", component: GameSetupComponent },
@@ -17,7 +18,8 @@ const routes: Routes = [
   { path: 'circularParticle', component: CircularMotionParticlesComponent},
   { path: 'randomBalls', component: RandomBallsComponent},
   { path: 'randomBubble', component: BubblesCollisionComponent},
-  { path: 'bubbleFade', component: BubbleFadeComponent}
+  { path: 'bubbleFade', component: BubbleFadeComponent},
+  { path: 'matrixRain', component:MatrixRainComponent}
 ];
 
 @NgModule({

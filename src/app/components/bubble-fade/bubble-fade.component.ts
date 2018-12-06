@@ -18,8 +18,7 @@ export class BubbleFadeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     public context: CanvasRenderingContext2D;
     public bubbles: BubbleFade[];
-    private mouse: Coordinate;
-    private 
+    private mouse: Coordinate; 
 
     public constructor() {
         this.bubbles = [];
