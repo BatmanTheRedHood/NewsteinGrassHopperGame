@@ -12,6 +12,7 @@ import { BalloonGameComponent } from './components/balloon-game/balloon-game.com
 import { MatrixRainComponent } from './components/matrix-rain/matrix-rain.component';
 import { CircularMotionParticlesComponent } from './components/circular-motion-particles/circular-motion-particles.component';
 import { RandomBallsComponent } from './components/random-balls/random-balls.component';
+import { BubblesCollisionComponent } from './components/bubbles-collision/bubbles-collision.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { RandomBallsComponent } from './components/random-balls/random-balls.com
     BalloonGameComponent,
     MatrixRainComponent,
     CircularMotionParticlesComponent,
-    RandomBallsComponent
+    RandomBallsComponent,
+    BubblesCollisionComponent
 
   ],
   imports: [

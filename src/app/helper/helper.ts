@@ -2,7 +2,7 @@ import { Coordinate } from "../model/coordinate";
 
 export class Helper {
     public static get maxWidth(): number {
-        return 1400;
+        return window.innerWidth;
     }
 
     private static colors: string[] = [
@@ -17,7 +17,7 @@ export class Helper {
     }
 
     public static get maxHeight(): number {
-        return 640;
+        return window.innerHeight;
     }
 
     public static random(min: number, max: number): number {

@@ -6,6 +6,7 @@ import { ChickenGameComponent } from './components/chicken-game/chicken-game.com
 import { BalloonGameComponent } from './components/balloon-game/balloon-game.component';
 import { CircularMotionParticlesComponent } from './components/circular-motion-particles/circular-motion-particles.component';
 import { RandomBallsComponent } from './components/random-balls/random-balls.component';
+import { BubblesCollisionComponent } from './components/bubbles-collision/bubbles-collision.component';
 
 const routes: Routes = [
   { path: "", component: GameSetupComponent },
@@ -13,7 +14,8 @@ const routes: Routes = [
   { path: 'chickengame', component: ChickenGameComponent},
   { path: 'balloonGame', component: BalloonGameComponent},
   { path: 'circularParticle', component: CircularMotionParticlesComponent},
-  { path: 'randomBalls', component: RandomBallsComponent}
+  { path: 'randomBalls', component: RandomBallsComponent},
+  { path: 'randomBubble', component: BubblesCollisionComponent}
 ];
 
 @NgModule({
