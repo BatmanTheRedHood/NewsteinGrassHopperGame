@@ -13,6 +13,7 @@ import { MatrixRainComponent } from './components/matrix-rain/matrix-rain.compon
 import { CircularMotionParticlesComponent } from './components/circular-motion-particles/circular-motion-particles.component';
 import { RandomBallsComponent } from './components/random-balls/random-balls.component';
 import { BubblesCollisionComponent } from './components/bubbles-collision/bubbles-collision.component';
+import { BubbleFadeComponent } from './components/bubble-fade/bubble-fade.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { BubblesCollisionComponent } from './components/bubbles-collision/bubble
     MatrixRainComponent,
     CircularMotionParticlesComponent,
     RandomBallsComponent,
-    BubblesCollisionComponent
+    BubblesCollisionComponent,
+    BubbleFadeComponent
 
   ],
   imports: [

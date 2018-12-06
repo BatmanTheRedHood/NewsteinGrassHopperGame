@@ -1,32 +1,32 @@
-import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { Helper } from 'src/app/helper/helper';
-import { Bubble } from 'src/app/model/bubblesCollision/bubble';
+import { BubbleFade } from 'src/app/model/bubblesFade/bubble-fade';
+import { Coordinate } from 'src/app/model/coordinate';
 
 var gameLoop;
 var soundLoop;
 
 @Component({
-    selector: 'app-bubbles-collision',
-    templateUrl: './bubbles-collision.component.html',
-    styleUrls: ['./bubbles-collision.component.css']
+    selector: 'app-bubble-fade',
+    templateUrl: './bubble-fade.component.html',
+    styleUrls: ['./bubble-fade.component.css']
 })
-export class BubblesCollisionComponent implements OnInit, AfterViewInit, OnDestroy {
+export class BubbleFadeComponent implements OnInit, AfterViewInit, OnDestroy {
+    private static bubbleMaxCount: number = 100;
 
     @ViewChild('myCanvas') public canvas: ElementRef;
 
     public context: CanvasRenderingContext2D;
-    public bubbles: Bubble[];
-    private bubbleCount: number
+    public bubbles: BubbleFade[];
+    private mouse: Coordinate;
+    private 
 
     public constructor() {
         this.bubbles = [];
-        this.bubbleCount = 10;
+        this.mouse = new Coordinate(Helper.maxWidth / 2, Helper.maxHeight / 2);
     }
 
     public ngOnInit(): void {
-        for (let i = 0; i < this.bubbleCount; i++) {
-            this.bubbles.push(new Bubble());
-        }
     }
 
     public ngAfterViewInit(): void {
@@ -36,14 +36,29 @@ export class BubblesCollisionComponent implements OnInit, AfterViewInit, OnDestr
         //this.playBackgroundAudio();
     }
 
+    @HostListener('mousemove', ['$event'])
+    onMousemove(event: MouseEvent) {
+        this.mouse.x = event.x;
+        this.mouse.y = event.y;
+    }
+
     // #region Game rules
     private runGame(): void {
         gameLoop = setInterval(() => {
-            this.context.fillStyle = 'rgba(255, 255, 255, 1.0)';
-            this.context.fillRect(0, 0, Helper.maxWidth, Helper.maxHeight);
+            //this.context.fillStyle = 'rgba(255, 255, 255, 1.0)';
+            //this.context.fillRect(0, 0, Helper.maxWidth, Helper.maxHeight);
+            this.context.clearRect(0, 0, Helper.maxWidth, Helper.maxHeight);
 
-            for (let i = 0; i < this.bubbles.length; i++) {
-                this.bubbles[i].move();
+            if (this.bubbles.length < BubbleFadeComponent.bubbleMaxCount) {
+                this.bubbles.push(new BubbleFade(this.mouse));
+            }
+
+            for (let i = this.bubbles.length - 1; i >= 0; i--) {
+                this.bubbles[i].update();
+
+                if (this.bubbles[i].radius < 10) {
+                    this.bubbles.splice(i, 1);
+                }
             }
 
             this.drawArc();
@@ -68,7 +83,7 @@ export class BubblesCollisionComponent implements OnInit, AfterViewInit, OnDestr
             this.context.closePath();
         }
     }
-
+  
     private drawCircle(): void {
         for (let i = 0; i < this.bubbles.length; i++) {
             this.context.beginPath();
@@ -79,7 +94,7 @@ export class BubblesCollisionComponent implements OnInit, AfterViewInit, OnDestr
                 0,
                 Math.PI * 2,
                 false);
-
+  
             this.context.fillStyle = this.bubbles[i].color;
             this.context.fill();
             this.context.closePath();
@@ -87,17 +102,17 @@ export class BubblesCollisionComponent implements OnInit, AfterViewInit, OnDestr
     }
     */
 
-    private drawArc() : void{
-        for(let i = 0; i < this.bubbles.length; i++) {
+    private drawArc(): void {
+        for (let i = 0; i < this.bubbles.length; i++) {
             this.context.beginPath();
             this.context.arc(
-                this.bubbles[i].position.x, 
-                this.bubbles[i].position.y, 
-                this.bubbles[i].radius, 
-                0, 
-                Math.PI * 2, 
+                this.bubbles[i].position.x,
+                this.bubbles[i].position.y,
+                this.bubbles[i].radius,
+                0,
+                Math.PI * 2,
                 false);
-  
+
             this.context.strokeStyle = this.bubbles[i].color;
             this.context.stroke();
             this.context.closePath();
