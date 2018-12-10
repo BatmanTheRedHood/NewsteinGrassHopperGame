@@ -4,6 +4,7 @@ import { Direction } from 'src/app/DataTypes/direction.enum';
 import { Helper } from 'src/app/helper/helper';
 import { Gun } from 'src/app/model/balloonGame/gun';
 import { Balloon } from 'src/app/model/balloonGame/balloon';
+import { Router } from '@angular/router';
 
 var gameLoop;
 var soundLoop;
@@ -31,20 +32,25 @@ export class BalloonGameComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('heartBalloonImg') public heartBalloonImg: ElementRef;
 
     @ViewChild('bulletAudio') public bulletAudio: ElementRef;
-    @ViewChild('burstAudio') public burstAudio: ElementRef;
     @ViewChild('eggCatchAudio') public eggCatchAudio: ElementRef;
+    @ViewChild('balloonPopAudio') public balloonPopAudio: ElementRef;
+    @ViewChild('balloonInflateAudio') public balloonInflateAudio: ElementRef;
+    @ViewChild('gameOverAudio') gameOverAudio: ElementRef;
 
     // #endregion
 
     private context: CanvasRenderingContext2D;
     private static interval: number = 100;
     private static counter: number = 0;
-    private static level: number = 10;
+    public level: number = 1;
+    public balloonMissed: number = 0;
+    public gameOver: boolean;
+    
 
     public gun: Gun;
     public balloons: Balloon[];
 
-    public constructor() {
+    public constructor(private router: Router) {
         this.gun = new Gun();
         this.balloons = [];
     }
@@ -54,6 +60,10 @@ export class BalloonGameComponent implements OnInit, AfterViewInit, OnDestroy {
 
     @HostListener('window:keydown', ['$event'])
     keyEvent(event: KeyboardEvent) {
+        if (this.gameOver) {
+            return;
+        }
+
         switch (event.keyCode) {
             case KeyCode.UP_ARROW:
                 this.gun.move(Direction.Up)
@@ -87,23 +97,27 @@ export class BalloonGameComponent implements OnInit, AfterViewInit, OnDestroy {
         gameLoop = setInterval(() => {
             this.context.clearRect(0, 0, Helper.maxWidth, Helper.maxHeight);
 
-            this.checkAndAddBalloon();
-
-            if (this.gun.bullet) {
-                this.gun.moveBullet();
-            }
-
-            for (let i = 0; i < this.balloons.length; i++) {
-                this.balloons[i].move();
+            if (!this.gameOver) {
+                this.moveAndPop();
+                this.checkAndAddBalloon();
+                this.checkAndMoveBalloon();
+                this.checkAndEndGame();
             }
 
             this.draw();
         }, 10);
     }
 
+    private moveAndPop() {
+        if (this.gun.bullet) {
+            this.checkAndPopBalloon();
+            this.gun.moveBullet();
+        }
+    }
+
     private checkAndAddBalloon() {
-        if ((BalloonGameComponent.counter * BalloonGameComponent.level) > BalloonGameComponent.interval) {
-            //this.playLayEggAudio();
+        if ((BalloonGameComponent.counter * this.level) > BalloonGameComponent.interval) {
+            this.playBalloonInflateAudio();
             this.balloons.push(new Balloon(this.randomBalloon()));
             BalloonGameComponent.counter = 0;
             BalloonGameComponent.interval = Helper.random(100, 1000);
@@ -111,8 +125,51 @@ export class BalloonGameComponent implements OnInit, AfterViewInit, OnDestroy {
 
         BalloonGameComponent.counter++;
     }
+
+    private checkAndPopBalloon() {
+        for (let i = this.balloons.length- 1; i >=0; i--) {
+            if (this.gun.bullet.hitBalloon(this.balloons[i])) {
+                this.balloons.splice(i, 1);
+                this.playBalloonPopAudio();
+                this.gun.scoreUp();
+
+                if (this.gun.score % 10 == 0) {
+                    this.level++;
+                }
+            }
+        }
+
+        BalloonGameComponent.counter++;
+    }
+
+    private checkAndMoveBalloon() {
+        for (let i = this.balloons.length - 1; i >=0 ; i--) {
+            if (this.balloons[i].isHittingTop()) {
+                this.balloons.splice(i, 1);
+                this.balloonMissed++;
+            } else {
+                this.balloons[i].move();
+            }
+        }
+    }
+
+    private checkAndEndGame() : void {
+        if(this.balloonMissed >= 10) {
+            // Stop game.
+            this.playGameOverAudio();
+            this.gameOver = true;
+
+            setTimeout(() => {
+                clearInterval(gameLoop);
+                clearInterval(soundLoop);
+                this.router.navigate([""]);
+            }, 1600)
+        }
+    }
+
     // #endregion
 
+    // #region Play Sound
     private playBulletAudio(): void {
         this.bulletAudio.nativeElement.play();
     }
@@ -120,6 +177,19 @@ export class BalloonGameComponent implements OnInit, AfterViewInit, OnDestroy {
     private playEggCatchAudio(): void {
         this.eggCatchAudio.nativeElement.play();
     }
+
+    private playBalloonPopAudio(): void {
+        this.balloonPopAudio.nativeElement.play();
+    }
+
+    private playBalloonInflateAudio(): void {
+        this.balloonInflateAudio.nativeElement.play();
+    }
+
+    private playGameOverAudio(): void {
+        this.gameOverAudio.nativeElement.play();
+    }
+    // #endregion 
 
     // #region Draw logic
 
@@ -168,7 +238,7 @@ export class BalloonGameComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private randomBalloon() : ElementRef {
-        let rand: number = Helper.randomInt(0, 8);
+        let rand: number = Helper.randomInt(0, 9);
 
         switch(rand) {
             case 0:

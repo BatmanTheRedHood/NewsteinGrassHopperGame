@@ -1,5 +1,6 @@
 import { Coordinate } from "../coordinate";
 import { Helper } from "src/app/helper/helper";
+import { Balloon } from "./balloon";
 
 export class Bullet {
     // Properties
@@ -19,7 +20,7 @@ export class Bullet {
     public constructor(gunPostion: Coordinate, gunWidth: number, gunHeight: number) {
         this.width = 50;
         this.heigth = 20;
-        this.speed = 2;
+        this.speed = 10;
         this.position = new Coordinate(gunPostion.x + gunWidth/2, gunPostion.y - 1 * gunHeight/3);
     }
 
@@ -29,5 +30,17 @@ export class Bullet {
 
     public isHittingGround(): boolean {
         return this.position.x >= Helper.maxWidth - this.width / 2;
+    }
+
+    public hitBalloon(balloon: Balloon): boolean {
+        //return Helper.distance(this.position, balloon.position) < balloon.width/2;
+        let yDiff = balloon.position.y - this.position.y;
+
+        if (Helper.abs(balloon.position.x - this.position.x) < balloon.width/2 && 
+            yDiff > 0 && yDiff < balloon.height/2) {
+            return true;
+        }
+
+        return false;
     }
 }

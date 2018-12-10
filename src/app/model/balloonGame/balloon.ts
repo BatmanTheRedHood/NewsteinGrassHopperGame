@@ -32,6 +32,6 @@ export class Balloon {
         }
     
         public isHittingTop() : boolean {
-            return this.position.y <= this.height / 2;
+            return this.position.y <= 0;
         }
 }
