@@ -56,7 +56,7 @@ export class CircularMotionParticlesComponent implements OnInit, AfterViewInit, 
     // #region Game rules
     private runGame(): void {
         gameLoop = setInterval(() => {
-            this.context.fillStyle = 'rgba(255, 255, 255, 0.05)';
+            this.context.fillStyle = 'rgba(0, 0, 0, 0.05)';
             this.context.fillRect(0, 0, Helper.maxWidth, Helper.maxHeight);
             for(let i = 0; i < this.particles.length; i++) {
                 this.particles[i].move(this.smoothCenter);

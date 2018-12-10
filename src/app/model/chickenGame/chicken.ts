@@ -26,7 +26,7 @@ export class Chicken {
         this.direction = Direction.Left;
         this.position = new Coordinate(
             Helper.random(this.size/2, Helper.maxWidth - this.size/2), 
-            this.size/2);
+            this.size/2 + 12);
 
         this.eggs = [];
     }

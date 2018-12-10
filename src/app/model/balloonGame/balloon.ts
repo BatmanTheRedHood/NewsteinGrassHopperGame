@@ -22,7 +22,7 @@ export class Balloon {
             this.width = 100;
             this.height = 200;
             this.speed = 1;
-            this.position = new Coordinate(Helper.random(200, Helper.maxWidth - this.width), Helper.maxHeight);
+            this.position = new Coordinate(Helper.random(300, Helper.maxWidth - this.width), Helper.maxHeight + this.height/2);
 
             this.drawImg = drawImg;
         }

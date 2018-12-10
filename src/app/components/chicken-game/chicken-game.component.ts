@@ -15,6 +15,10 @@ var soundLoop;
     styleUrls: ['./chicken-game.component.css']
 })
 export class ChickenGameComponent implements AfterViewInit, OnDestroy {
+    private static interval: number = 100;
+    private static counter: number = 0;
+    public static level: number = 1;
+
     public chicken: Chicken;
     public basket: Basket;
 
@@ -35,27 +39,22 @@ export class ChickenGameComponent implements AfterViewInit, OnDestroy {
     @ViewChild('eggCrackAudio') public eggCrackAudio: ElementRef;
     @ViewChild('eggCatchAudio') public eggCatchAudio: ElementRef;
     @ViewChild('bounceAudio') public bounceAudio: ElementRef;
+    @ViewChild('gameOverAudio') gameOverAudio: ElementRef;
     
     // #endregion 
 
     private context: CanvasRenderingContext2D;
     private resume: boolean = true;
-    public level: number;
     private levelUpThreshold: number;
-    private interval: number;
-    private counter: number;
+
     private directionChangeInterval: number;
     private directionChangeCounter: number;
 
     public eggMissed: number;
 
     public constructor(private router: Router) {
-        this.level = 1;
         this.levelUpThreshold = 10;
         this.eggMissed = 0;
-
-        this.interval = 100;
-        this.counter = 0;
 
         this.directionChangeInterval = 50;
         this.directionChangeCounter = 0;
@@ -128,31 +127,37 @@ export class ChickenGameComponent implements AfterViewInit, OnDestroy {
 
     private checkAndEndGame() : void {
         if(this.eggMissed >= 10) {
-            clearInterval(gameLoop);
-            clearInterval(soundLoop);
-            this.router.navigate([""]);
+            // Stop game.
+            this.playGameOverAudio();
+
+            setTimeout(() => {
+                clearInterval(gameLoop);
+                clearInterval(soundLoop);
+                this.router.navigate([""]);
+            }, 1600)
         }
     }
 
     private checkAndLevelUp() : void {
         if (this.basket.score % this.levelUpThreshold == 0) {
-            this.level++;
+            ChickenGameComponent.level++;
             this.chicken.speedUp();
         }
     }
 
     private checkAndLayEgg() {
-        if ((this.counter * this.level) > this.interval) {
+        if ((ChickenGameComponent.counter * ChickenGameComponent.level) > ChickenGameComponent.interval) {
             this.playLayEggAudio();
             this.chicken.layEgg();
-            this.counter = 0;
-            this.interval = Helper.random(100, 1000);
+            ChickenGameComponent.counter = 0;
+            ChickenGameComponent.interval = Helper.random(100, 1000);
         }
-        this.counter++;
+        
+        ChickenGameComponent.counter++;
     }
 
     private checkAndChangeDirection() {
-        if ((this.directionChangeCounter * this.level) > this.directionChangeInterval) {
+        if ((this.directionChangeCounter * ChickenGameComponent.level) > this.directionChangeInterval) {
             this.playChickenSwingAudio();
             this.chicken.changeDirection();
             this.directionChangeCounter = 0;
@@ -193,6 +198,10 @@ export class ChickenGameComponent implements AfterViewInit, OnDestroy {
 
     private playChickenSwingAudio(): void {
         this.chickenSwingAudio.nativeElement.play();
+    }
+
+    private playGameOverAudio(): void {
+        this.gameOverAudio.nativeElement.play();
     }
     // #endregion
 

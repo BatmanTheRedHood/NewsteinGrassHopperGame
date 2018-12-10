@@ -37,6 +37,10 @@ export class BalloonGameComponent implements OnInit, AfterViewInit, OnDestroy {
     // #endregion
 
     private context: CanvasRenderingContext2D;
+    private static interval: number = 100;
+    private static counter: number = 0;
+    private static level: number = 10;
+
     public gun: Gun;
     public balloons: Balloon[];
 
@@ -83,6 +87,8 @@ export class BalloonGameComponent implements OnInit, AfterViewInit, OnDestroy {
         gameLoop = setInterval(() => {
             this.context.clearRect(0, 0, Helper.maxWidth, Helper.maxHeight);
 
+            this.checkAndAddBalloon();
+
             if (this.gun.bullet) {
                 this.gun.moveBullet();
             }
@@ -95,7 +101,16 @@ export class BalloonGameComponent implements OnInit, AfterViewInit, OnDestroy {
         }, 10);
     }
 
+    private checkAndAddBalloon() {
+        if ((BalloonGameComponent.counter * BalloonGameComponent.level) > BalloonGameComponent.interval) {
+            //this.playLayEggAudio();
+            this.balloons.push(new Balloon(this.randomBalloon()));
+            BalloonGameComponent.counter = 0;
+            BalloonGameComponent.interval = Helper.random(100, 1000);
+        }
 
+        BalloonGameComponent.counter++;
+    }
     // #endregion
 
     private playBulletAudio(): void {
@@ -135,7 +150,6 @@ export class BalloonGameComponent implements OnInit, AfterViewInit, OnDestroy {
         }
     }
 
-
     private setCanvas(): void {
         const canvasEl: HTMLCanvasElement = this.canvas.nativeElement;
 
@@ -151,5 +165,30 @@ export class BalloonGameComponent implements OnInit, AfterViewInit, OnDestroy {
     public ngOnDestroy() : void {
         clearInterval(gameLoop);
         clearInterval(soundLoop);
+    }
+
+    private randomBalloon() : ElementRef {
+        let rand: number = Helper.randomInt(0, 8);
+
+        switch(rand) {
+            case 0:
+                return this.darkRedBalloonImg;
+            case 1:
+                return this.redBalloonImg;
+            case 2:
+                return this.pinkBalloonImg;
+            case 3:
+                return this.blueBalloonImg;
+            case 4:
+                return this.darkGreenBalloonImg;
+            case 5:
+                return this.greenBalloonImg;
+            case 6:
+                return this.lightGreenBalloonImg;
+            case 7:
+                return this.goldenBalloonImg;
+            case 8:
+                return this.heartBalloonImg;
+        }
     }
 }
