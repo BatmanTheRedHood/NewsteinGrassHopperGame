@@ -16,7 +16,7 @@ export class MatrixSymbol {
         this.head = new Coordinate(x, Helper.random(10, 100));
         this.tail = new Coordinate(x, this.head.y);
         this.font = Helper.randomInt(10, 21)
-        this.colorIndex = Helper.doubleToInt((this.font - 10)/4);
+        this.colorIndex = 3 - Helper.doubleToInt((this.font - 10)/4);
         this.speed = Helper.randomInt(1, 30);
         this.speedCounter = this.speed;
 

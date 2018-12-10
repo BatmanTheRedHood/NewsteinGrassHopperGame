@@ -19,16 +19,16 @@ export class GameSetupComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.demoService.demoGetRequest().subscribe(
-            data => {
-                console.log(data);
-                this.title = data;
-            },
-            error => {
-                console.log("API request failed");
-                console.log(error);
-            }
-        )
+        // this.demoService.demoGetRequest().subscribe(
+        //     data => {
+        //         console.log(data);
+        //         this.title = data;
+        //     },
+        //     error => {
+        //         console.log("API request failed");
+        //         console.log(error);
+        //     }
+        // )
     }
 
     public onSubmit(): void {

@@ -36,7 +36,7 @@ export class Helper {
     ];
 
 
-    public static matrixColors: string[] = ["#7FFF00", "#7CFC00", "#76EE00", "#66CD00"];
+    public static matrixColors: string[] = ["#7FFF00", "#76EE00", "#66CD00", "#458B00"]; //, "#7CFC00"
 
     public static randomColor(): string {
         let rand: number = Helper.random(0, Helper.colors.length -7);

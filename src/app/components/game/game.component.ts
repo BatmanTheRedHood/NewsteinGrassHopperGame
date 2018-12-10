@@ -208,5 +208,7 @@ export class GameComponent implements AfterViewInit, OnDestroy {
     // #endregion
 
     public ngOnDestroy(): void {
+        clearInterval(gameLoop);
+        clearInterval(soundLoop);
     }
 }

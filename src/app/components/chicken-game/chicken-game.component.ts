@@ -40,14 +40,14 @@ export class ChickenGameComponent implements AfterViewInit, OnDestroy {
 
     private context: CanvasRenderingContext2D;
     private resume: boolean = true;
-    private level: number;
+    public level: number;
     private levelUpThreshold: number;
     private interval: number;
     private counter: number;
     private directionChangeInterval: number;
     private directionChangeCounter: number;
 
-    private eggMissed: number;
+    public eggMissed: number;
 
     public constructor(private router: Router) {
         this.level = 1;
