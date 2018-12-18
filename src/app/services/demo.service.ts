@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { LoginModel } from '../model/user/login-model';
+import { SearchResponse } from '../model/demo/search-response';
 
 @Injectable({
     providedIn: 'root'
@@ -28,5 +29,11 @@ export class DemoService {
         });
 
         return this.http.post<any>(url, model, { headers: headers });
+    }
+
+    public demoLocalGet() : Observable<SearchResponse>{
+        let url: string = "api/demo/search.json";
+        
+        return this.http.get<SearchResponse>(url);
     }
 }

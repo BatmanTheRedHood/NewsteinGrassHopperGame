@@ -14,6 +14,9 @@ import { CircularMotionParticlesComponent } from './components/circular-motion-p
 import { RandomBallsComponent } from './components/random-balls/random-balls.component';
 import { BubblesCollisionComponent } from './components/bubbles-collision/bubbles-collision.component';
 import { BubbleFadeComponent } from './components/bubble-fade/bubble-fade.component';
+import { NoPageFoundComponent } from './components/no-page-found/no-page-found.component';
+import { CompanyListComponent } from './components/demo/company-list/company-list.component';
+import { CompanyUnitComponent } from './components/demo/company-unit/company-unit.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +29,10 @@ import { BubbleFadeComponent } from './components/bubble-fade/bubble-fade.compon
     CircularMotionParticlesComponent,
     RandomBallsComponent,
     BubblesCollisionComponent,
-    BubbleFadeComponent
+    BubbleFadeComponent,
+    NoPageFoundComponent,
+    CompanyListComponent,
+    CompanyUnitComponent
 
   ],
   imports: [

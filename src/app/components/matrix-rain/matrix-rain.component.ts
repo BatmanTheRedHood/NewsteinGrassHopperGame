@@ -59,12 +59,20 @@ export class MatrixRainComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private drawText(): void {
         for (let i = 0; i < this.maticxs.length; i++) {
-            if (this.maticxs[i].head.y <= Helper.maxHeight + this.maticxs[i].font) {
+            if (this.maticxs[i].head.y <= Helper.maxHeight + this.maticxs[i].fontSize) {
                 // Draw metrix
                 if (this.maticxs[i].speedCounter <= 0) {
-                    this.context.font = "bold " + this.maticxs[i].font + "px Arial";
+                    this.context.font = "bold " + this.maticxs[i].fontSize + "px Arial";
                     this.context.fillStyle = Helper.matrixColors[this.maticxs[i].colorIndex];
-                    //this.context.f
+                    
+                    // Create gradient
+                    //var gradient = this.context.createLinearGradient(this.maticxs[i].head.x, this.maticxs[i].head.y - this.maticxs[i].fontSize, this.maticxs[i].head.x, this.maticxs[i].head.y);
+                    //gradient.addColorStop(0, "red");
+                    //gradient.addColorStop(0.5, "blue");
+                    //gradient.addColorStop(1.0, Helper.matrixColors[this.maticxs[i].colorIndex]);
+                    // Fill with gradient
+                    //this.context.fillStyle = gradient;
+
                     this.context.fillText(this.maticxs[i].nextChar, this.maticxs[i].head.x, this.maticxs[i].head.y);
 
                     // this.context.fillStyle = 'rgba(255, 255, 255, 1.0)';
@@ -72,16 +80,16 @@ export class MatrixRainComponent implements OnInit, AfterViewInit, OnDestroy {
                     //     this.maticxs[i].head.x, this.maticxs[i].head.y , 
                     //     this.maticxs[i].head.x + this.maticxs[i].font, this.maticxs[i].head.y);
 
-                    this.drawCircle(this.maticxs[i].head, this.maticxs[i].font / 2);
+                    this.drawCircle(this.maticxs[i].head, this.maticxs[i].fontSize / 2);
 
-                    this.context.font = (this.maticxs[i].font - 2) + "px Arial";
-                    this.context.fillStyle = this.context.fillStyle = Helper.matrixColors[this.maticxs[i].colorIndex + 1];
-                    this.context.fillText(this.maticxs[i].currentChar, this.maticxs[i].head.x, this.maticxs[i].head.y - this.maticxs[i].font);
+                    this.context.font = (this.maticxs[i].fontSize - 2) + "px Arial";
+                    this.context.fillStyle = Helper.matrixColors[this.maticxs[i].colorIndex + 1];
+                    this.context.fillText(this.maticxs[i].currentChar, this.maticxs[i].head.x, this.maticxs[i].head.y - this.maticxs[i].fontSize);
                 }
-            } else if (this.maticxs[i].tail.y <= Helper.maxHeight + 4 * this.maticxs[i].font) {
+            } else if (this.maticxs[i].tail.y <= Helper.maxHeight + 4 * this.maticxs[i].fontSize) {
                 // Delete matricx;
                 this.context.fillStyle = 'rgba(255, 255, 255, 1.0)';
-                this.drawCircle(this.maticxs[i].tail, this.maticxs[i].font);
+                this.drawCircle(this.maticxs[i].tail, this.maticxs[i].fontSize);
                
             } else {
                 // Remove matrix and add new

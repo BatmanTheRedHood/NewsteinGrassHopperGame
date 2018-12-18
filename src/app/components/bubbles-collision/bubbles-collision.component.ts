@@ -42,6 +42,8 @@ export class BubblesCollisionComponent implements OnInit, AfterViewInit, OnDestr
             this.context.fillStyle = 'rgba(255, 255, 255, 1.0)';
             this.context.fillRect(0, 0, Helper.maxWidth, Helper.maxHeight);
 
+            this.checkCollission();
+
             for (let i = 0; i < this.bubbles.length; i++) {
                 this.bubbles[i].move();
             }
@@ -50,6 +52,38 @@ export class BubblesCollisionComponent implements OnInit, AfterViewInit, OnDestr
         }, 10);
     }
 
+    private checkCollission() : void {
+        for (let i = 0; i < this.bubbles.length; i++) {
+            for (let j = i + 1; j < this.bubbles.length; j++) {
+                let distance = this.bubbles[i].radius + this.bubbles[j].radius;
+                if (Helper.distance(this.bubbles[i].position, this.bubbles[j].position) <= distance) {
+                    this.resolveCollision(i, j);
+                }
+            }
+        }
+    }
+
+    public resolveCollision(i: number, j: number) : void {
+        let xVelocityDiff = this.bubbles[i].xSpeed - this.bubbles[j].xSpeed;
+        let yVelocityDiff = this.bubbles[i].ySpeed - this.bubbles[j].ySpeed;
+    
+        let xDist = this.bubbles[j].position.x - this.bubbles[i].position.x;
+        let yDist = this.bubbles[j].position.y - this.bubbles[i].position.y;
+
+        // Prevent accidental overlap of particles
+        if (xVelocityDiff * xDist + yVelocityDiff * yDist >= 0) {
+            // Grab angle between the two colliding particles
+            let angle = -Math.atan2(this.bubbles[j].position.y - this.bubbles[i].position.y, this.bubbles[j].position.x - this.bubbles[i].position.x);
+
+            this.bubbles[i].rotate(angle);
+            this.bubbles[j].rotate(angle);
+
+            this.bubbles[j] = this.bubbles[i].collission(this.bubbles[j]);
+
+            this.bubbles[i].rotate(-angle);
+            this.bubbles[j].rotate(-angle);
+        }
+    }
     // #endregion
 
     // #region Draw logic

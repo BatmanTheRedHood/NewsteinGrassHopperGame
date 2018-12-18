@@ -9,6 +9,7 @@ import { RandomBallsComponent } from './components/random-balls/random-balls.com
 import { BubblesCollisionComponent } from './components/bubbles-collision/bubbles-collision.component';
 import { BubbleFadeComponent } from './components/bubble-fade/bubble-fade.component';
 import { MatrixRainComponent } from './components/matrix-rain/matrix-rain.component';
+import { NoPageFoundComponent } from './components/no-page-found/no-page-found.component';
 
 const routes: Routes = [
   { path: "", component: GameSetupComponent },
@@ -19,7 +20,9 @@ const routes: Routes = [
   { path: 'randomBalls', component: RandomBallsComponent},
   { path: 'randomBubble', component: BubblesCollisionComponent},
   { path: 'bubbleFade', component: BubbleFadeComponent},
-  { path: 'matrixRain', component:MatrixRainComponent}
+  { path: 'matrixRain', component:MatrixRainComponent},
+  { path: 'gunBulletGame', redirectTo: 'balloonGame'},
+  { path: '**', component: NoPageFoundComponent}
 ];
 
 @NgModule({

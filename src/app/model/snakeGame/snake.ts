@@ -28,9 +28,7 @@ export class Snake {
         this.speed = 1;
         this.score = 0;
         this.direction = Direction.Left;
-        this.position = new Coordinate(
-            Helper.random(400, Helper.maxWidth - this.size/2), 
-            Helper.random(this.size/2, Helper.maxHeight - this.size/2));
+        this.position = new Coordinate(Helper.maxWidth/2, Helper.maxHeight/2);
     }
 
     // #region Methods
