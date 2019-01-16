@@ -60,7 +60,7 @@ export class Chicken {
     }
 
     public layEgg(): void {
-        let egg = new Egg(this.position, this.speed);
+        let egg = new Egg(this.position, 1 /* this.speed */);
         this.eggs.splice(0, 0, egg); // Add egg at start;
     }
 

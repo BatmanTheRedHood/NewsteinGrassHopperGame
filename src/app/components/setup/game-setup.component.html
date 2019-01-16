@@ -19,6 +19,6 @@
 
   <input [(ngModel)]="loginModel.userName" >
   <input [(ngModel)]="loginModel.password" >
-  <input type="button" value="Submit" (click)="onSubmit()">
+  <input type="button" value="Submit" (click)="onEncript(loginModel.userName)">
 
 </div>

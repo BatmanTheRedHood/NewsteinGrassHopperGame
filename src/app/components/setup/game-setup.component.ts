@@ -21,6 +21,9 @@ export class GameSetupComponent implements OnInit {
     }
 
     public ngOnInit(): void {
+    }
+
+    public ngOnInit2(): void {
         this.demoService.demoLocalGet().subscribe(
             reposnse => {
                 console.log("API request succeeded!");
@@ -35,6 +38,33 @@ export class GameSetupComponent implements OnInit {
                 console.log(error);
             }
         )
+    }
+
+    public onEncript(tag: string): void {
+        let shift = 24;
+        var letter =['a','b','c','d','e','f','g','h','i','j', 'k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
+        let numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        
+        let result = "";
+
+        for (var i = 0; i < tag.length; i++){
+            let x = tag.charAt(i);
+            let charIndex = letter.indexOf(x);
+            let numberIndex = numbers.indexOf(x);
+
+            let y;
+            if (charIndex >= 0) {
+                y = letter[(charIndex + shift) % 26];
+            } else if (numberIndex >= 0) {
+                y = numbers[(numberIndex + shift) % 10]
+            } else {
+                y = x;
+            }
+
+            result += y;
+        }
+
+        this.loginModel.password = result;
     }
 
     public onSubmit(): void {
