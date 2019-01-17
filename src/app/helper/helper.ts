@@ -5,6 +5,10 @@ export class Helper {
         return window.innerWidth;
     }
 
+    public static get gravity(): number {
+        return 9.8;
+    }
+
     private static symbols = ["诶", "比", "西", "迪",
     "伊",
     "艾", "弗",

@@ -17,6 +17,7 @@ import { BubbleFadeComponent } from './components/bubble-fade/bubble-fade.compon
 import { NoPageFoundComponent } from './components/no-page-found/no-page-found.component';
 import { CompanyListComponent } from './components/demo/company-list/company-list.component';
 import { CompanyUnitComponent } from './components/demo/company-unit/company-unit.component';
+import { AngryBirdComponent } from './components/angry-bird/angry-bird.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { CompanyUnitComponent } from './components/demo/company-unit/company-uni
     BubbleFadeComponent,
     NoPageFoundComponent,
     CompanyListComponent,
-    CompanyUnitComponent
+    CompanyUnitComponent,
+    AngryBirdComponent
 
   ],
   imports: [

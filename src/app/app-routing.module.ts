@@ -10,6 +10,7 @@ import { BubblesCollisionComponent } from './components/bubbles-collision/bubble
 import { BubbleFadeComponent } from './components/bubble-fade/bubble-fade.component';
 import { MatrixRainComponent } from './components/matrix-rain/matrix-rain.component';
 import { NoPageFoundComponent } from './components/no-page-found/no-page-found.component';
+import { AngryBirdComponent } from './components/angry-bird/angry-bird.component';
 
 const routes: Routes = [
   { path: "", component: GameSetupComponent },
@@ -22,6 +23,8 @@ const routes: Routes = [
   { path: 'bubbleFade', component: BubbleFadeComponent},
   { path: 'matrixRain', component:MatrixRainComponent},
   { path: 'gunBulletGame', redirectTo: 'balloonGame'},
+  { path: 'angryBird', component: AngryBirdComponent},
+
   { path: '**', component: NoPageFoundComponent}
 ];
 
