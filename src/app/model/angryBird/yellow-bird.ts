@@ -3,9 +3,12 @@ import { ElementRef } from "@angular/core";
 import { Helper } from "src/app/helper/helper";
 import { BirdState } from "src/app/DataTypes/bird-state.enum";
 
+var trajectoryInterval;
+var birdInterval;
+
 export class YellowBird {
-    private static dx: number = 10;
-    private static dy: number = 10;
+    private static dx: number = 20;
+    private static dy: number = 20;
 
     private xSpeed: number;
     private ySpeed: number;
@@ -15,6 +18,8 @@ export class YellowBird {
     public width: number;
     public height: number
     public state: BirdState;
+
+    private gravity: number;
 
     public angle: number;
     public speed: number;
@@ -34,46 +39,100 @@ export class YellowBird {
         this.position = new Coordinate(this.width/2, Helper.maxHeight - this.height/2);
         this.imageResourse = imageRes;
         this.state = BirdState.STAND_BY;
+        this.gravity = Helper.gravity;
     }
 
+    // 1st
+    public checkStandByToLaunch(mouse: Coordinate,launchCenter: Coordinate, context: CanvasRenderingContext2D) : void {
+        if (this.state == BirdState.STAND_BY && this.onBird(mouse)) {
+            console.log("first");
+            this.drawLaunchReady(launchCenter, context);
+            this.state = BirdState.IN_LAUNCH_POSITION;
+        }
+    }
+
+    // 2nd
     public checkLaunchHold(mouse: Coordinate) : void {
-        if (this.state == BirdState.READY_TO_LAUNCH && this.onBird(mouse)) {
+        if (this.state == BirdState.IN_LAUNCH_POSITION && this.onBird(mouse)) {
+            console.log("second");
             this.state = BirdState.HOLD_TO_LAUNCH;
         }
     }
 
-    public chechReadyLaunch(angle: number, mouse: Coordinate, launchCenter: Coordinate, context: CanvasRenderingContext2D) : void {
-        if (this.state == BirdState.HOLD_TO_LAUNCH) {
+    // 3rd
+    public checkLaunchAngleSpeed(mouse: Coordinate, launchCenter: Coordinate, context: CanvasRenderingContext2D) : void {
+        if (this.state == BirdState.HOLD_TO_LAUNCH || this.state == BirdState.SET_TO_LAUNCH) {
+            console.log("third");
+
+            let angle: number = this.getAngle(launchCenter, mouse)
+
+            console.log (angle + " => " + mouse.y + " - " + launchCenter.y);
+            this.state = BirdState.SET_TO_LAUNCH;
             context.clearRect(0, 0, Helper.maxWidth, Helper.maxHeight);
 
             this.position.x = mouse.x;
             this.position.y = mouse.y;
             this.draw(context);
 
-            let speed = Helper.distance(mouse, launchCenter)/ 10;
+            let speed = Helper.distance(mouse, launchCenter) / 4;
 
             //console.log(speed);
 
             this.xSpeed = speed * Math.cos(angle);
             this.ySpeed = speed * Math.sin(angle);
 
-            console.log(speed + " " + this.xSpeed + " " + this.ySpeed);
+            //console.log(speed + " " + this.xSpeed + " " + this.ySpeed);
 
             this.drawTrajectory(context);
+
+            this.drawLine(launchCenter, mouse, context);
         }
     }
 
-    public checkClickToLaunch(mouse: Coordinate,launchCenter: Coordinate, context: CanvasRenderingContext2D) : void {
-        if (this.state == BirdState.STAND_BY && this.onBird(mouse)) {
-            this.drawLaunchReady(launchCenter, context);
-            this.state = BirdState.READY_TO_LAUNCH;
-        }
-    }
-
-    public checkLaunch(mouse: Coordinate,launchCenter: Coordinate, context: CanvasRenderingContext2D) : void {
-        if (this.state == BirdState.HOLD_TO_LAUNCH && this.onBird(mouse)) {
-            
+    // 4th
+    public checkLaunchToFly(mouse: Coordinate,launchCenter: Coordinate, context: CanvasRenderingContext2D, time: number) : void {
+        if (this.state == BirdState.SET_TO_LAUNCH && this.onBird(mouse)) {
+            console.log("forth");
             this.state = BirdState.LAUNCHED;
+
+            birdInterval = setInterval(() => { 
+                context.clearRect(0, 0, Helper.maxWidth, Helper.maxHeight);
+                //console.log(this.position);
+                //console.log(this.xSpeed);
+                if (this.isBoundaryTouching()) {
+                    clearInterval(birdInterval);
+                }
+
+                //console.log("Hello");
+                this.move(time);
+                this.draw(context);
+            }, 10);
+        }
+    }
+
+    // 5th
+    public powerClick(context: CanvasRenderingContext2D, time: number): void{
+        if (this.state == BirdState.LAUNCHED) {
+            console.log("fifth");
+            this.gravity = 0;
+            this.xSpeed *= 2;
+            this.ySpeed *= 2;
+
+            this.state = BirdState.POWER_MODE;
+
+            clearInterval(birdInterval);
+            birdInterval = setInterval(() => { 
+                context.clearRect(0, 0, Helper.maxWidth, Helper.maxHeight);
+                //console.log(this.position);
+                //console.log(this.xSpeed);
+                if (this.isBoundaryTouching()) {
+                    clearInterval(birdInterval);
+                }
+
+                //console.log("Hello");
+                this.move(time);
+                this.draw(context);
+            }, 10);
         }
     }
 
@@ -81,20 +140,23 @@ export class YellowBird {
         this.position.x += YellowBird.dx * this.xSpeed *  time;
         this.position.y -= YellowBird.dy * this.ySpeed * time;
 
-        this.ySpeed = this.ySpeed - Helper.gravity * time;
+        this.ySpeed = this.ySpeed - this.gravity * time;
     }
 
     public isBoundaryTouching(): boolean {
         if (this.position.x < 0)
             return true;
 
-        if (this.position.x > Helper.maxWidth)
-            return true
+        if (this.position.x > Helper.maxWidth - this.width / 2) {
+            this.xSpeed = 0;
+            this.ySpeed = -Helper.gravity;
+            return false;
+        }
 
-        if (this.position.y < 0)
-            return true;
+        // if (this.position.y < 0)
+        //     return true;
 
-        if (this.position.y > Helper.maxHeight)
+        if (this.position.y > Helper.maxHeight - this.height / 2)
             return true
 
         return false;
@@ -108,7 +170,7 @@ export class YellowBird {
             this.width,
             this.height);
 
-            console.log(this.position)
+            //console.log(this.position)
     }
 
     private onBird(mouse: Coordinate) : boolean {
@@ -125,46 +187,68 @@ export class YellowBird {
         let y = this.drawPosition.y;
         let ySpeed = this.ySpeed
 
-
-        context.fillStyle = Helper.randomColor();
-        var game = setInterval(() => { 
+        clearInterval(trajectoryInterval);
+        trajectoryInterval = setInterval(() => { 
             //context.clearRect(0, 0, Helper.maxWidth, Helper.maxHeight);
 
             if (x > Helper.maxWidth || y > Helper.maxHeight) {
-                clearInterval(game);
+                clearInterval(trajectoryInterval);
             }
 
             context.beginPath();
             context.arc(x + this.width/2, y + this.height/2, 2, 0, Math.PI*2);
-            //context.fillStyle = Helper.randomColor();
+            context.fillStyle = "white";
             context.fill();
             context.closePath();
 
-            x += YellowBird.dx * this.xSpeed *  .01;
+            x += YellowBird.dx * this.xSpeed *  .1;
             y -= YellowBird.dy * ySpeed * .1;
 
-            ySpeed = ySpeed - Helper.gravity * .01;
+            ySpeed = ySpeed - this.gravity * .1;
 
             //console.log(x + "  " + y);
         }, 10);
     }
 
     private drawLaunchReady(launchCenter: Coordinate, context: CanvasRenderingContext2D): void {
-
+        let source = new Coordinate(this.position.x, this.position.y);
+        let lineSlop = this.lineSlop(source, launchCenter);
+        //console.log(lineSlop);
         var x = setInterval(() => { 
             context.clearRect(0, 0, Helper.maxWidth, Helper.maxHeight);
 
-            if (this.drawPosition.x < launchCenter.x) {
+            if (this.position.x < launchCenter.x) {
                 this.position.x += 2;
+                this.position.y = ( lineSlop * (this.position.x - source.x) + source.y);
+                //console.log(lineSlop + " * " + this.position.x + " - " + source.x + " + " + source.y);
+                //console.log(this.position);
             } else {
                 clearInterval(x);
-            }
-
-            if (this.drawPosition.y > launchCenter.y) {
-                this.position.y -=1;
             }
 
             this.draw(context);
         }, 10);
     }
+
+    private drawLine(source: Coordinate, destination: Coordinate, ctx: CanvasRenderingContext2D) : void {
+        ctx.lineWidth = 10;
+        ctx.strokeStyle = "Brown"
+        ctx.beginPath();
+        ctx.moveTo(source.x, source.y);
+        ctx.lineTo(destination.x, destination.y);
+        ctx.stroke();
+    }
+
+    private getAngle(center: Coordinate, point: Coordinate) : number{
+        var deltaY = point.y - center.y;
+        var deltaX = point.x - center.x;
+        var theta = Math.atan2(deltaY, deltaX); // range (-PI, PI]
+        theta = theta * 180 / Math.PI; // rads to degs, range (-180, 180]
+        // if (theta < 0) theta = 360 + theta; // range [0, 360)
+        return theta;
+      }
+
+      private lineSlop(source: Coordinate, destination: Coordinate) : number {
+          return (destination.y - source.y)/(destination.x - source.x);
+      }
 }

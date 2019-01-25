@@ -20,18 +20,18 @@ export class MatrixSymbol {
         this.speed = Helper.randomInt(1, 30);
         this.speedCounter = this.speed;
 
-        this.nextChar = Helper.randomSymbol();
+        this.nextChar = Helper.randomChar();
         this.currentChar = this.nextChar;
     }
 
     public update(): void {
-        if (this.head.y <= Helper.maxHeight +  this.fontSize) {
+        if (this.head.y <= Helper.maxHeight + this.fontSize) {
 
             if (this.speedCounter < 0) {
                 this.head.y += this.fontSize;
 
                 this.currentChar = this.nextChar;
-                this.nextChar = Helper.randomSymbol();
+                this.nextChar = Helper.randomChar();
                 this.speedCounter = this.speed;
             } else {
                 this.speedCounter--;

@@ -46,7 +46,7 @@ export class AngryBirdComponent implements OnInit, AfterViewInit, OnDestroy {
 		this.updateMouse(event);
 		//console.log("Mouse move: " + event);
 
-		this.bird.chechReadyLaunch(30 * Math.PI / 180, this.mouse, this.launchCenter, this.context);
+		this.bird.checkLaunchAngleSpeed(this.mouse, this.launchCenter, this.context);
 	}
 
 	@HostListener('mouseup', ['$event'])
@@ -54,9 +54,13 @@ export class AngryBirdComponent implements OnInit, AfterViewInit, OnDestroy {
 		this.updateMouse(event);
 
 		//console.log("Mouse Up: " + event);
-		this.bird.checkClickToLaunch(this.mouse, this.launchCenter, this.context);
-		this.bird.checkLaunch(this.mouse, this.launchCenter, this.context);
-		
+		//this.bird.luanchedClick();
+
+		this.bird.powerClick(this.context, AngryBirdComponent.time / 1000);
+		this.bird.checkStandByToLaunch(this.mouse, this.launchCenter, this.context);
+		this.bird.checkLaunchToFly(this.mouse, this.launchCenter, this.context, AngryBirdComponent.time / 1000);
+		//this.bird.checkClickToLaunch(this.mouse, this.launchCenter, this.context);
+
 	}
 
 	public ngAfterViewInit(): void {
@@ -67,7 +71,8 @@ export class AngryBirdComponent implements OnInit, AfterViewInit, OnDestroy {
 
 		setTimeout(() => {
 			this.bird.draw(this.context);
-		}, 100)
+			this.drawLaunchCenter();
+		}, 1000)
 
 		//this.bird.getReadyToLaunch(this.launchCenter, this.context);
 		//this.bird.launch(30 * Math.PI / 180, 40, this.context);
@@ -108,5 +113,15 @@ export class AngryBirdComponent implements OnInit, AfterViewInit, OnDestroy {
 	private updateMouse(event: MouseEvent): void {
 		this.mouse.x = event.x;
 		this.mouse.y = event.y;
+
+		//this.drawLaunchCenter();
+	}
+
+	private drawLaunchCenter(): void {
+		this.context.beginPath();
+		this.context.arc(this.launchCenter.x, this.launchCenter.y, 10, 0, Math.PI*2);
+		this.context.fillStyle = "brown";
+		this.context.fill();
+		this.context.closePath();
 	}
 }

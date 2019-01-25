@@ -1,8 +1,6 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef, HostListener } from '@angular/core';
-import { BubbleFade } from 'src/app/model/bubblesFade/bubble-fade';
+import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { Coordinate } from 'src/app/model/coordinate';
 import { Helper } from 'src/app/helper/helper';
-import { BubbleFadeComponent } from '../bubble-fade/bubble-fade.component';
 import { MatrixSymbol } from 'src/app/model/maticx/matrix-symbol';
 
 var gameLoop;
@@ -14,10 +12,12 @@ var soundLoop;
     styleUrls: ['./matrix-rain.component.css']
 })
 export class MatrixRainComponent implements OnInit, AfterViewInit, OnDestroy {
-    private static colSize: number = 20;
+    private static colSize: number = 15;
     private static matrixMaxCount: number = Helper.doubleToInt(Helper.maxWidth / MatrixRainComponent.colSize);
 
     @ViewChild('myCanvas') public canvas: ElementRef;
+
+    @ViewChild('matrixAudio') matrixAudio: ElementRef;
 
     public context: CanvasRenderingContext2D;
     public maticxs: MatrixSymbol[];
@@ -35,14 +35,16 @@ export class MatrixRainComponent implements OnInit, AfterViewInit, OnDestroy {
         this.setCanvas();
 
         this.runGame();
-        //this.playBackgroundAudio();
+        this.playBackgroundAudio();
     }
 
     // #region Game rules
     private runGame(): void {
         gameLoop = setInterval(() => {
-            this.context.fillStyle = 'rgba(0, 0, 0, 0.01)';
-            this.context.fillRect(0, 0, Helper.maxWidth, Helper.maxHeight);
+
+            // Blur effect
+            //this.context.fillStyle = 'rgba(0, 0, 0, 0.005)';
+            //this.context.fillRect(0, 0, Helper.maxWidth, Helper.maxHeight);
             //this.context.clearRect(0, 0, Helper.maxWidth, Helper.maxHeight);
 
             for (let i = this.maticxs.length - 1; i >= 0; i--) {
@@ -59,6 +61,8 @@ export class MatrixRainComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private drawText(): void {
         for (let i = 0; i < this.maticxs.length; i++) {
+
+            // Draw text till head touches ground else start clearing text.
             if (this.maticxs[i].head.y <= Helper.maxHeight + this.maticxs[i].fontSize) {
                 // Draw metrix
                 if (this.maticxs[i].speedCounter <= 0) {
@@ -80,16 +84,20 @@ export class MatrixRainComponent implements OnInit, AfterViewInit, OnDestroy {
                     //     this.maticxs[i].head.x, this.maticxs[i].head.y , 
                     //     this.maticxs[i].head.x + this.maticxs[i].font, this.maticxs[i].head.y);
 
-                    this.drawCircle(this.maticxs[i].head, this.maticxs[i].fontSize / 2);
+                    //this.drawCircle(this.maticxs[i].head, this.maticxs[i].fontSize / 2);
+                    this.context.clearRect(this.maticxs[i].head.x, this.maticxs[i].head.y - 2* this.maticxs[i].fontSize, 
+                        this.maticxs[i].fontSize, this.maticxs[i].fontSize);
 
-                    this.context.font = (this.maticxs[i].fontSize - 2) + "px Arial";
+                    this.context.font = "bold " + (this.maticxs[i].fontSize - 2) + "px Arial";
                     this.context.fillStyle = Helper.matrixColors[this.maticxs[i].colorIndex + 1];
                     this.context.fillText(this.maticxs[i].currentChar, this.maticxs[i].head.x, this.maticxs[i].head.y - this.maticxs[i].fontSize);
                 }
             } else if (this.maticxs[i].tail.y <= Helper.maxHeight + 4 * this.maticxs[i].fontSize) {
                 // Delete matricx;
-                this.context.fillStyle = 'rgba(255, 255, 255, 1.0)';
-                this.drawCircle(this.maticxs[i].tail, this.maticxs[i].fontSize);
+                //this.context.fillStyle = 'rgba(255, 255, 255, 1.0)';
+                //this.drawCircle(this.maticxs[i].tail, this.maticxs[i].fontSize);
+                this.context.clearRect(this.maticxs[i].tail.x, this.maticxs[i].tail.y - 2* this.maticxs[i].fontSize, 
+                    this.maticxs[i].fontSize, 2* this.maticxs[i].fontSize);
                
             } else {
                 // Remove matrix and add new
@@ -125,6 +133,18 @@ export class MatrixRainComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // #endregion
 
+    private playBackgroundAudio(): void {
+        // this.matrixAudio.nativeElement.play();
+        // let audio = new Audio();
+        // audio.src = "../../../assets/sound/matrix/matrix.mp3";
+        // audio.load();
+        // audio.play();
+        
+        soundLoop = setInterval(() => {
+            this.matrixAudio.nativeElement.play();
+            //audio.play();
+        }, 1000);
+    }
 
     public ngOnDestroy(): void {
         clearInterval(gameLoop);

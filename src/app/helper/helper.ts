@@ -33,6 +33,21 @@ export class Helper {
     "吾", "艾",
     "贼", "德"]
 
+    public static randomChar(): string {
+        let randomChar: any;
+        let charType = Helper.randomInt(0, 5);
+        if (charType > 1) {
+            // set it to Katakana
+            randomChar = String.fromCharCode(0x30A0 + Helper.randomInt(0, 96)
+            );
+        } else {
+            // set it to numeric
+            randomChar = Helper.randomInt(0, 9);
+        }
+
+        return randomChar;
+    }
+    
     private static colors: string[] = [
         "#92a8d1", "#034f84", "#f7cac9", "#f7786b",
         "#d5f4e6", "#80ced6", "#fefbd8", "#618685",
@@ -40,7 +55,7 @@ export class Helper {
     ];
 
 
-    public static matrixColors: string[] = ["#7FFF00", "#76EE00", "#66CD00", "#458B00"]; //, "#7CFC00"
+    public static matrixColors: string[] = ["#7FFF00", "#76EE00", "#66CD00", "#458B00", "#458B00"]; //, "#7CFC00"
 
     public static randomColor(): string {
         let rand: number = Helper.random(0, Helper.colors.length -7);
